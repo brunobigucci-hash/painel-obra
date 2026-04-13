@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel de Obra</title>
+
+<style>
+body {
+  font-family: Arial;
+  background:#f3f4f6;
+  padding:20px;
+}
+
+.container {
+  max-width:900px;
+  margin:auto;
+}
+
+.card {
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+
+input, button, select {
+  padding:8px;
+  margin:5px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+button {
+  background:#111;
+  color:white;
+  cursor:pointer;
+}
+
+.item {
+  border:1px solid #ddd;
+  padding:10px;
+  border-radius:8px;
+  margin-top:10px;
+}
+
+.donut {
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:20px auto;
+  background: conic-gradient(#2563eb 0%, #ddd 0%);
+}
+
+.center {
+  background:white;
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:32px;
+  font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Painel de Obra</h1>
+
+<div class="card">
+
+<h3>Status da obra</h3>
+
+<select id="mes"></select>
+<input id="ano" type="number" placeholder="Ano">
+
+<button onclick="verificar()">Verificar mês</button>
+
+<div id="painel"></div>
+
+<h2>Total acumulado da obra</h2>
+
+<div class="donut" id="grafico">
+  <div class="center" id="valor">0%</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+const meses = [
+"Jan","Fev","Mar","Abr","Mai","Jun",
+"Jul","Ago","Set","Out","Nov","Dez"
+];
+
+let dados = JSON.parse(localStorage.getItem("obra")) || [];
+
+function salvar(){
+  localStorage.setItem("obra", JSON.stringify(dados));
+}
+
+function carregarMeses(){
+  let select = document.getElementById("mes");
+
+  meses.forEach((m,i)=>{
+    let opt = document.createElement("option");
+    opt.value=i;
+    opt.innerText=m;
+    select.appendChild(opt);
+  });
+}
+
+function verificar(){
+  let mes = Number(document.getElementById("mes").value);
+  let ano = Number(document.getElementById("ano").value);
+
+  let painel = document.getElementById("painel");
+
+  let existe = dados.find(d => d.mes == mes && d.ano == ano);
+
+  if(existe){
+    painel.innerHTML = `
+      <div class="item">
+        <b>${meses[mes]}/${ano}</b><br><br>
+        ${existe.valor}% realizado no mês<br><br>
+        <button onclick="excluir(${existe.id})">Excluir lançamento</button>
+      </div>
+    `;
+  }else{
+    painel.innerHTML = `
+      <div class="item">
+        <b>${meses[mes]}/${ano}</b><br><br>
+        <input id="novo" type="number" placeholder="% do mês">
+        <button onclick="salvarMes(${mes},${ano})">Salvar</button>
+      </div>
+    `;
+  }
+}
+
+function salvarMes(mes,ano){
+  let valor = Number(document.getElementById("novo").value);
+
+  if(!valor && valor !== 0) return;
+
+  dados.push({
+    id: Date.now(),
+    mes,
+    ano,
+    valor
+  });
+
+  salvar();
+  verificar();
+  atualizarGrafico();
+}
+
+function excluir(id){
+  dados = dados.filter(d => d.id != id);
+  salvar();
+
+  document.getElementById("painel").innerHTML = "";
+  atualizarGrafico();
+}
+
+function atualizarGrafico(){
+  let total = dados.reduce((acc,d) => acc + Number(d.valor), 0);
+
+  document.getElementById("valor").innerText = total + "%";
+
+  document.getElementById("grafico").style.background =
+    `conic-gradient(#2563eb ${total}%, #ddd ${total}%)`;
+}
+
+carregarMeses();
+atualizarGrafico();
+</script>
+
+</body>
+</html>
