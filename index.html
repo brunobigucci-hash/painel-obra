@@ -1369,13 +1369,16 @@ if (m.mostrandoAcao === "cancelamento") {
             <button class="btn-danger small-btn" onclick="abrirCancelamentoProgramacao(${p.id})">Cancelar</button>
           </div>
 
-          ${p.mostrandoCancelamento ? `
-            <div class="inline-form">
-              <label>Motivo do cancelamento</label>
-              <textarea id="motivo_cancelamento_prog_${p.id}" placeholder="Explique o motivo do cancelamento"></textarea>
-              <button class="btn-danger small-btn" onclick="confirmarCancelamentoProgramacao(${p.id})">Salvar cancelamento</button>
-            </div>
-          ` : ""}
+       ${p.mostrandoCancelamento ? `
+  <div class="inline-form">
+    <label>Motivo do cancelamento</label>
+    <textarea id="motivo_cancelamento_prog_${p.id}" placeholder="Explique o motivo do cancelamento"></textarea>
+    <div class="item-actions">
+      <button class="btn-danger small-btn" onclick="confirmarCancelamentoProgramacao(${p.id})">Salvar cancelamento</button>
+      <button class="btn-black small-btn" onclick="fecharCancelamentoProgramacao(${p.id})">Fechar</button>
+    </div>
+  </div>
+` : ""}
         `;
         ativasEl.appendChild(div);
       });
