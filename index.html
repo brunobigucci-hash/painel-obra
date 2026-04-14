@@ -233,7 +233,6 @@
 
     button {
       border: none;
-      background: var(--mb-black);
       color: white;
       padding: 10px 16px;
       border-radius: 10px;
@@ -246,33 +245,30 @@
       transform: translateY(-1px);
     }
 
-    /* Botões padrão pretos */
-.secondary-btn,
-.ghost-btn,
-.small-btn,
-.btn-gray,
-.btn-red {
-  background: var(--mb-black) !important;
-  color: white !important;
-}
+    /* Pretos */
+    .secondary-btn,
+    .ghost-btn,
+    .small-btn,
+    .btn-black,
+    .btn-gray,
+    .btn-neutral {
+      background: var(--mb-black) !important;
+      color: white !important;
+    }
 
-/* Botões verdes */
-.btn-ok,
-.btn-success {
-  background: #15803d !important;
-  color: white !important;
-}
+    /* Positivos verdes */
+    .btn-ok,
+    .btn-success,
+    .btn-positive {
+      background: #15803d !important;
+      color: white !important;
+    }
 
-/* Botões vermelhos */
-.btn-danger,
-.btn-warn,
-.icon-btn {
-  background: var(--mb-red) !important;
-  color: white !important;
-}
-
+    /* Cancelamento / excluir vermelhos */
     .btn-danger,
-    .icon-btn {
+    .btn-warn,
+    .icon-btn,
+    .btn-cancel {
       background: var(--mb-red) !important;
       color: white !important;
     }
@@ -358,19 +354,6 @@
       gap: 8px;
       flex-wrap: wrap;
       margin-top: 12px;
-    }
-
-    .progress-wrap {
-      margin-top: 12px;
-    }
-
-    .row-between {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 14px;
-      color: var(--mb-muted);
-      margin-bottom: 6px;
     }
 
     .mini-text {
@@ -653,7 +636,7 @@
         <div class="section-header">
           <h3>Registro de pendências</h3>
           <div class="section-actions">
-            <button class="ghost-btn small-btn" onclick="toggleConcluidasPendencias()">Ver concluídas</button>
+            <button class="btn-success small-btn" onclick="toggleConcluidasPendencias()">Ver concluídas</button>
           </div>
         </div>
 
@@ -661,7 +644,7 @@
           <input id="pendenciaItem" placeholder="Pendência">
           <input id="pendenciaResponsavel" placeholder="Responsável">
           <input id="pendenciaPrazo" type="date">
-          <button onclick="addPendencia()">Adicionar</button>
+          <button class="btn-black" onclick="addPendencia()">Adicionar</button>
         </div>
 
         <div id="listaPendenciasAbertas" class="fixed-scroll"></div>
@@ -669,7 +652,7 @@
         <div id="painelPendenciasConcluidas" class="hidden-panel">
           <div class="section-header" style="margin-top:14px;">
             <h3 style="font-size:18px; margin:0;">Pendências concluídas</h3>
-            <button class="ghost-btn small-btn" onclick="toggleConcluidasPendencias()">Fechar</button>
+            <button class="btn-black small-btn" onclick="toggleConcluidasPendencias()">Fechar</button>
           </div>
           <div id="listaPendenciasConcluidas" class="fixed-scroll"></div>
         </div>
@@ -681,8 +664,8 @@
         <div class="section-header">
           <h3>Controle de entregas e materiais</h3>
           <div class="section-actions">
-            <button class="small-btn btn-danger" onclick="toggleMateriaisCancelados()">Ver cancelados</button>
-<button class="small-btn btn-danger" onclick="toggleProgramacoesCanceladas()">Ver cancelados</button>
+            <button class="btn-danger small-btn" onclick="toggleMateriaisCancelados()">Ver cancelados</button>
+            <button class="btn-success small-btn" onclick="toggleMateriaisEntregues()">Ver entregues</button>
           </div>
         </div>
 
@@ -691,7 +674,7 @@
           <input id="materialNome" placeholder="Material">
           <input id="materialFornecedor" placeholder="Fornecedor">
           <input id="materialPrevisto" type="date">
-          <button onclick="addMaterial()">Adicionar</button>
+          <button class="btn-black" onclick="addMaterial()">Adicionar</button>
         </div>
 
         <div id="listaMateriaisPendentes" class="fixed-scroll"></div>
@@ -699,7 +682,7 @@
         <div id="painelMateriaisCancelados" class="hidden-panel">
           <div class="section-header" style="margin-top:14px;">
             <h3 style="font-size:18px; margin:0;">Materiais cancelados</h3>
-            <button class="ghost-btn small-btn" onclick="toggleMateriaisCancelados()">Fechar</button>
+            <button class="btn-black small-btn" onclick="toggleMateriaisCancelados()">Fechar</button>
           </div>
           <div id="listaMateriaisCancelados" class="fixed-scroll"></div>
         </div>
@@ -707,7 +690,7 @@
         <div id="painelMateriaisEntregues" class="hidden-panel">
           <div class="section-header" style="margin-top:14px;">
             <h3 style="font-size:18px; margin:0;">Materiais entregues</h3>
-            <button class="ghost-btn small-btn" onclick="toggleMateriaisEntregues()">Fechar</button>
+            <button class="btn-black small-btn" onclick="toggleMateriaisEntregues()">Fechar</button>
           </div>
 
           <div class="filters-grid">
@@ -719,8 +702,8 @@
           </div>
 
           <div class="section-actions" style="margin-bottom:12px;">
-            <button class="small-btn" onclick="renderMateriaisEntreguesFiltrados()">Buscar</button>
-            <button class="small-btn" onclick="limparFiltrosEntregues()">Limpar filtros</button>
+            <button class="btn-success small-btn" onclick="renderMateriaisEntreguesFiltrados()">Buscar</button>
+            <button class="btn-black small-btn" onclick="limparFiltrosEntregues()">Limpar filtros</button>
           </div>
 
           <div id="listaMateriaisEntregues" class="fixed-scroll"></div>
@@ -731,8 +714,8 @@
         <div class="section-header">
           <h3>Programações futuras da obra</h3>
           <div class="section-actions">
-           <button class="small-btn btn-ok" onclick="toggleProgramacoesConcluidas()">Ver concluídos</button>
-            <button class="ghost-btn small-btn" onclick="toggleProgramacoesCanceladas()">Ver cancelados</button>
+            <button class="btn-success small-btn" onclick="toggleProgramacoesConcluidas()">Ver concluídos</button>
+            <button class="btn-danger small-btn" onclick="toggleProgramacoesCanceladas()">Ver cancelados</button>
           </div>
         </div>
 
@@ -741,7 +724,7 @@
           <input id="programacaoFrente" placeholder="Frente / serviço">
           <input id="programacaoArea" placeholder="Área / equipe">
           <input id="programacaoResponsavel" placeholder="Responsável">
-          <button onclick="addProgramacao()">Adicionar</button>
+          <button class="btn-black" onclick="addProgramacao()">Adicionar</button>
         </div>
 
         <div class="form-note" style="margin-top:-4px;">
@@ -753,7 +736,7 @@
         <div id="painelProgramacoesConcluidas" class="hidden-panel">
           <div class="section-header" style="margin-top:14px;">
             <h3 style="font-size:18px; margin:0;">Programações concluídas</h3>
-            <button class="ghost-btn small-btn" onclick="toggleProgramacoesConcluidas()">Fechar</button>
+            <button class="btn-black small-btn" onclick="toggleProgramacoesConcluidas()">Fechar</button>
           </div>
 
           <div class="filters-grid">
@@ -765,8 +748,8 @@
           </div>
 
           <div class="section-actions" style="margin-bottom:12px;">
-            <button class="small-btn" onclick="renderProgramacoesConcluidasFiltradas()">Buscar</button>
-            <button class="small-btn" onclick="limparFiltrosProgramacoesConcluidas()">Limpar filtros</button>
+            <button class="btn-success small-btn" onclick="renderProgramacoesConcluidasFiltradas()">Buscar</button>
+            <button class="btn-black small-btn" onclick="limparFiltrosProgramacoesConcluidas()">Limpar filtros</button>
           </div>
 
           <div id="listaProgramacoesConcluidas" class="fixed-scroll"></div>
@@ -775,7 +758,7 @@
         <div id="painelProgramacoesCanceladas" class="hidden-panel">
           <div class="section-header" style="margin-top:14px;">
             <h3 style="font-size:18px; margin:0;">Programações canceladas</h3>
-            <button class="ghost-btn small-btn" onclick="toggleProgramacoesCanceladas()">Fechar</button>
+            <button class="btn-black small-btn" onclick="toggleProgramacoesCanceladas()">Fechar</button>
           </div>
 
           <div class="filters-grid">
@@ -787,8 +770,8 @@
           </div>
 
           <div class="section-actions" style="margin-bottom:12px;">
-            <button class="small-btn" onclick="renderProgramacoesCanceladasFiltradas()">Buscar</button>
-            <button class="small-btn" onclick="limparFiltrosProgramacoesCanceladas()">Limpar filtros</button>
+            <button class="btn-danger small-btn" onclick="renderProgramacoesCanceladasFiltradas()">Buscar</button>
+            <button class="btn-black small-btn" onclick="limparFiltrosProgramacoesCanceladas()">Limpar filtros</button>
           </div>
 
           <div id="listaProgramacoesCanceladas" class="fixed-scroll"></div>
@@ -798,11 +781,11 @@
 
     <section class="grid two-uneven">
       <div class="card">
-        <h3>Anotações rápidas com data</h3>
+        <h3>Anotações rápidas do dia</h3>
+        <p class="mini-text" id="notaDataInfo"></p>
         <div class="form-note">
-          <input id="notaData" type="date">
           <textarea id="notaTexto" placeholder="Escreva uma observação da obra..."></textarea>
-          <button onclick="addNota()">Salvar anotação</button>
+          <button class="btn-black" onclick="addNota()">Salvar anotação</button>
         </div>
         <div id="listaNotas" class="fixed-scroll notes"></div>
       </div>
@@ -816,7 +799,7 @@
         <div class="dashboard-entry-status">
           <select id="statusMes"></select>
           <input id="statusAno" type="number" placeholder="Ano" min="2020" max="2100">
-          <button onclick="verificarStatusSelecionado()">Verificar mês</button>
+          <button class="btn-black" onclick="verificarStatusSelecionado()">Verificar mês</button>
         </div>
 
         <div id="painelLancamentoSelecionado" class="item-box" style="display:none;"></div>
@@ -840,7 +823,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "painel_obra_mbigucci_v4";
+    const STORAGE_KEY = "painel_obra_mbigucci_v5";
 
     const defaultState = {
       obraNome: "Obra MBigucci",
@@ -876,7 +859,8 @@
           responsavel: "Mestre João",
           observacao: "Dependente da liberação da área pelo time de instalações.",
           motivoCancelamento: "",
-          status: "Programado"
+          status: "Programado",
+          mostrandoCancelamento: false
         }
       ],
       notas: [
@@ -947,6 +931,10 @@
       return `${day}/${month}/${year}`;
     }
 
+    function dataHojeISO() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
     function preencherMeses() {
       const select = document.getElementById("statusMes");
       select.innerHTML = "";
@@ -966,6 +954,7 @@
     function renderHeader() {
       document.getElementById("obraNomeInput").value = state.obraNome;
       document.getElementById("dataHoje").textContent = new Date().toLocaleDateString("pt-BR");
+      document.getElementById("notaDataInfo").textContent = `Data do registro: ${new Date().toLocaleDateString("pt-BR")}`;
     }
 
     function getBadgeByStatus(status) {
@@ -1047,7 +1036,7 @@
             <span class="${getBadgeByStatus(p.status)}">${p.status}</span>
           </div>
           <div class="item-actions">
-            <button class="small-btn" onclick="concluirPendencia(${p.id})">Marcar como concluído</button>
+            <button class="btn-success small-btn" onclick="concluirPendencia(${p.id})">Marcar como concluído</button>
           </div>
         `;
         abertasEl.appendChild(div);
@@ -1130,8 +1119,8 @@
 
         let actionArea = `
           <div class="item-actions">
-          <button class="small-btn btn-ok" onclick="abrirEntregaMaterial(${m.id})">Marcar como entregue</button>
-<button class="small-btn btn-danger" onclick="abrirCancelamentoMaterial(${m.id})">Cancelar pedido</button>
+            <button class="btn-success small-btn" onclick="abrirEntregaMaterial(${m.id})">Marcar como entregue</button>
+            <button class="btn-danger small-btn" onclick="abrirCancelamentoMaterial(${m.id})">Cancelar pedido</button>
           </div>
         `;
 
@@ -1140,7 +1129,7 @@
             <div class="inline-form">
               <label>Data de entrega</label>
               <input id="entrega_${m.id}" type="date">
-              <button class="small-btn" onclick="confirmarEntregaMaterial(${m.id})">Salvar entrega</button>
+              <button class="btn-success small-btn" onclick="confirmarEntregaMaterial(${m.id})">Salvar entrega</button>
             </div>
           `;
         }
@@ -1150,7 +1139,7 @@
             <div class="inline-form">
               <label>Motivo do cancelamento</label>
               <textarea id="cancelamento_${m.id}" placeholder="Explique o motivo do cancelamento"></textarea>
-              <button class="small-btn" onclick="confirmarCancelamentoMaterial(${m.id})">Salvar cancelamento</button>
+              <button class="btn-danger small-btn" onclick="confirmarCancelamentoMaterial(${m.id})">Salvar cancelamento</button>
             </div>
           `;
         }
@@ -1336,8 +1325,7 @@
 
     function isProgramacaoAtrasada(item) {
       if (item.status !== "Programado") return false;
-      const hoje = new Date();
-      const hojeStr = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()).toISOString().slice(0, 10);
+      const hojeStr = dataHojeISO();
       return item.data < hojeStr;
     }
 
@@ -1371,15 +1359,15 @@
           </div>
 
           <div class="item-actions">
-           <button class="small-btn btn-ok" onclick="concluirProgramacao(${p.id})">Concluir</button>
-<button class="small-btn btn-danger" onclick="abrirCancelamentoProgramacao(${p.id})">Cancelar</button>
+            <button class="btn-success small-btn" onclick="concluirProgramacao(${p.id})">Concluir</button>
+            <button class="btn-danger small-btn" onclick="abrirCancelamentoProgramacao(${p.id})">Cancelar</button>
           </div>
 
           ${p.mostrandoCancelamento ? `
             <div class="inline-form">
               <label>Motivo do cancelamento</label>
               <textarea id="motivo_cancelamento_prog_${p.id}" placeholder="Explique o motivo do cancelamento"></textarea>
-              <button class="small-btn" onclick="confirmarCancelamentoProgramacao(${p.id})">Salvar cancelamento</button>
+              <button class="btn-danger small-btn" onclick="confirmarCancelamentoProgramacao(${p.id})">Salvar cancelamento</button>
             </div>
           ` : ""}
         `;
@@ -1516,7 +1504,7 @@
             <span class="${getBadgeByStatus(p.status)}">${p.status}</span>
           </div>
           <div class="item-actions">
-            <button class="small-btn btn-danger" onclick="excluirProgramacao(${p.id})">Excluir</button>
+            <button class="btn-danger small-btn" onclick="excluirProgramacao(${p.id})">Excluir</button>
           </div>
         `;
         container.appendChild(div);
@@ -1567,7 +1555,7 @@
             <span class="${getBadgeByStatus(p.status)}">${p.status}</span>
           </div>
           <div class="item-actions">
-            <button class="small-btn btn-danger" onclick="excluirProgramacao(${p.id})">Excluir</button>
+            <button class="btn-danger small-btn" onclick="excluirProgramacao(${p.id})">Excluir</button>
           </div>
         `;
         container.appendChild(div);
@@ -1619,14 +1607,12 @@
     }
 
     function addNota() {
-      const data = document.getElementById("notaData").value;
       const texto = document.getElementById("notaTexto").value.trim();
-
-      if (!data || !texto) return;
+      if (!texto) return;
 
       state.notas.unshift({
         id: Date.now(),
-        data,
+        data: dataHojeISO(),
         texto
       });
 
@@ -1653,7 +1639,7 @@
             <strong>${mesesNomes[mes]} / ${ano}</strong>
             <p class="item-title">${existente.realizadoMes}% realizado no mês</p>
             <div class="status-inline-actions">
-              <button class="small-btn btn-danger" onclick="excluirStatus(${existente.id})">Excluir lançamento</button>
+              <button class="btn-danger small-btn" onclick="excluirStatus(${existente.id})">Excluir lançamento</button>
             </div>
           </div>
         `;
@@ -1664,7 +1650,7 @@
             <p class="item-sub">Nenhum lançamento encontrado para este mês. Informe o percentual realizado.</p>
             <input id="novoRealizadoMes" class="status-value-input" type="number" min="0" max="100" step="0.01" placeholder="% realizada no mês">
             <div class="status-inline-actions">
-              <button class="small-btn" onclick="adicionarStatusSelecionado()">Salvar lançamento</button>
+              <button class="btn-success small-btn" onclick="adicionarStatusSelecionado()">Salvar lançamento</button>
             </div>
           </div>
         `;
@@ -1781,7 +1767,6 @@
       updateSummary();
     }
 
-    document.getElementById("notaData").value = new Date().toISOString().slice(0, 10);
     document.getElementById("statusAno").value = new Date().getFullYear();
 
     preencherMeses();
