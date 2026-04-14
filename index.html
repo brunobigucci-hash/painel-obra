@@ -1247,6 +1247,24 @@ if (m.mostrandoAcao === "cancelamento") {
       renderMateriais();
     }
 
+    function fecharAcaoMaterial(id) {
+  const material = state.materiais.find(m => m.id === id);
+  if (!material) return;
+
+  material.mostrandoAcao = "";
+  saveState();
+  renderMateriais();
+}
+
+function fecharCancelamentoProgramacao(id) {
+  const item = state.programacoes.find(p => p.id === id);
+  if (!item) return;
+
+  item.mostrandoCancelamento = false;
+  saveState();
+  renderProgramacoes();
+}
+
     function confirmarEntregaMaterial(id) {
       const input = document.getElementById(`entrega_${id}`);
       if (!input || !input.value) return;
