@@ -7,17 +7,12 @@
   <style>
     :root {
       --mb-red: #b31217;
-      --mb-red-dark: #8f0e12;
       --mb-black: #111111;
       --mb-white: #ffffff;
       --mb-bg: #f5f5f5;
       --mb-border: #e5e7eb;
       --mb-text: #1f2937;
       --mb-muted: #6b7280;
-      --ok: #15803d;
-      --warn: #b45309;
-      --danger: #b91c1c;
-      --info: #1d4ed8;
       --soft-red: #fff1f2;
     }
 
@@ -64,15 +59,37 @@
       margin: 0 0 12px 0;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 34px;
+    .obra-title-wrap {
+      display: grid;
+      gap: 10px;
+      width: 100%;
+      max-width: 780px;
+    }
+
+    .obra-title-label {
+      font-size: 13px;
+      color: var(--mb-muted);
+      font-weight: bold;
+    }
+
+    #obraNomeInput {
+      font-size: 32px;
+      font-weight: bold;
       color: var(--mb-black);
+      border: none;
+      background: transparent;
+      padding: 0;
+      width: 100%;
+    }
+
+    #obraNomeInput:focus {
+      outline: none;
+      border-bottom: 2px solid var(--mb-black);
     }
 
     .subtitle {
       color: var(--mb-muted);
-      margin-top: 8px;
+      margin-top: 2px;
       max-width: 760px;
       line-height: 1.45;
     }
@@ -222,27 +239,17 @@
       transform: translateY(-1px);
     }
 
-    .secondary-btn {
-      background: var(--mb-red);
-      color: white;
+    .secondary-btn,
+    .ghost-btn,
+    .small-btn,
+    .btn-ok,
+    .btn-warn,
+    .btn-gray,
+    .btn-danger,
+    .btn-red {
+      background: var(--mb-black) !important;
+      color: white !important;
     }
-
-    .ghost-btn {
-      background: #f3f4f6;
-      color: var(--mb-black);
-    }
-
-    .small-btn {
-      padding: 8px 12px;
-      font-size: 13px;
-      border-radius: 8px;
-    }
-
-    .btn-ok { background: var(--ok); }
-    .btn-warn { background: var(--warn); }
-    .btn-gray { background: #6b7280; }
-    .btn-danger { background: var(--danger); }
-    .btn-red { background: var(--mb-red); }
 
     .item-box {
       border: 1px solid var(--mb-border);
@@ -314,10 +321,11 @@
     }
 
     .icon-btn {
-      background: var(--danger);
+      background: var(--mb-black) !important;
       padding: 8px 10px;
       border-radius: 8px;
       font-size: 12px;
+      color: white !important;
     }
 
     .item-actions {
@@ -365,7 +373,7 @@
       border: 1px solid var(--mb-border);
       border-radius: 14px;
       padding: 14px;
-      margin: 14px 0 18px 0;
+      margin: 16px 0 18px 0;
     }
 
     .total-item span {
@@ -478,9 +486,21 @@
 
     .filters-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr auto;
-      gap: 10px;
+      grid-template-columns: 1.2fr 1.2fr 1.4fr 1.4fr 1.2fr;
+      gap: 12px;
       margin-bottom: 14px;
+    }
+
+    .filters-grid input {
+      min-height: 48px;
+      padding: 12px 14px;
+      font-size: 15px;
+    }
+
+    .filters-grid input::placeholder {
+      color: #4b5563;
+      opacity: 1;
+      font-size: 14px;
     }
 
     .empty-state {
@@ -520,8 +540,8 @@
         padding: 16px;
       }
 
-      h1 {
-        font-size: 26px;
+      #obraNomeInput {
+        font-size: 24px;
       }
 
       .top-cards {
@@ -562,13 +582,14 @@
   <div class="container">
     <header class="hero">
       <div class="hero-top">
-        <div>
-          <p class="tag">MBigucci • Painel Operacional</p>
-          <h1 id="obraNome">Nome da Obra</h1>
+        <div class="obra-title-wrap">
+          <span class="obra-title-label">Nome da obra</span>
+          <input id="obraNomeInput" type="text" value="Obra MBigucci" oninput="editarNomeObra(this.value)">
           <p class="subtitle">
             Controle diário da obra, pendências, materiais, equipes, anotações e avanço físico.
           </p>
         </div>
+
         <div class="today-box">
           <span>Hoje</span>
           <strong id="dataHoje"></strong>
@@ -668,14 +689,14 @@
           <div class="filters-grid">
             <input id="filtroDataInicio" type="date" placeholder="Data inicial">
             <input id="filtroDataFim" type="date" placeholder="Data final">
-            <input id="filtroProduto" placeholder="Produto">
+            <input id="filtroProduto" placeholder="Nome do produto">
             <input id="filtroFornecedor" placeholder="Fornecedor">
-            <input id="filtroPedido" placeholder="Pedido">
+            <input id="filtroPedido" placeholder="Número do pedido">
           </div>
 
           <div class="section-actions" style="margin-bottom:12px;">
-            <button class="secondary-btn small-btn" onclick="renderMateriaisEntreguesFiltrados()">Buscar</button>
-            <button class="ghost-btn small-btn" onclick="limparFiltrosEntregues()">Limpar filtros</button>
+            <button class="small-btn" onclick="renderMateriaisEntreguesFiltrados()">Buscar</button>
+            <button class="small-btn" onclick="limparFiltrosEntregues()">Limpar filtros</button>
           </div>
 
           <div id="listaMateriaisEntregues" class="fixed-scroll"></div>
@@ -747,7 +768,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "painel_obra_mbigucci_v2";
+    const STORAGE_KEY = "painel_obra_mbigucci_v3";
 
     const defaultState = {
       obraNome: "Obra MBigucci",
@@ -865,8 +886,13 @@
       });
     }
 
+    function editarNomeObra(valor) {
+      state.obraNome = valor || "Obra MBigucci";
+      saveState();
+    }
+
     function renderHeader() {
-      document.getElementById("obraNome").textContent = state.obraNome;
+      document.getElementById("obraNomeInput").value = state.obraNome;
       document.getElementById("dataHoje").textContent = new Date().toLocaleDateString("pt-BR");
     }
 
@@ -927,13 +953,8 @@
       abertasEl.innerHTML = "";
       concluidasEl.innerHTML = "";
 
-      if (!abertas.length) {
-        abertasEl.innerHTML = `<div class="empty-state">Nenhuma pendência aberta.</div>`;
-      }
-
-      if (!concluidas.length) {
-        concluidasEl.innerHTML = `<div class="empty-state">Nenhuma pendência concluída.</div>`;
-      }
+      if (!abertas.length) abertasEl.innerHTML = `<div class="empty-state">Nenhuma pendência aberta.</div>`;
+      if (!concluidas.length) concluidasEl.innerHTML = `<div class="empty-state">Nenhuma pendência concluída.</div>`;
 
       abertas.forEach((p) => {
         const div = document.createElement("div");
@@ -948,7 +969,7 @@
             <span class="${badgeClass(p.status)}">${p.status}</span>
           </div>
           <div class="item-actions">
-            <button class="small-btn btn-ok" onclick="concluirPendencia(${p.id})">Marcar como concluído</button>
+            <button class="small-btn" onclick="concluirPendencia(${p.id})">Marcar como concluído</button>
           </div>
         `;
         abertasEl.appendChild(div);
@@ -1022,13 +1043,8 @@
       pendentesEl.innerHTML = "";
       canceladosEl.innerHTML = "";
 
-      if (!pendentes.length) {
-        pendentesEl.innerHTML = `<div class="empty-state">Nenhum material pendente.</div>`;
-      }
-
-      if (!cancelados.length) {
-        canceladosEl.innerHTML = `<div class="empty-state">Nenhum material cancelado.</div>`;
-      }
+      if (!pendentes.length) pendentesEl.innerHTML = `<div class="empty-state">Nenhum material pendente.</div>`;
+      if (!cancelados.length) canceladosEl.innerHTML = `<div class="empty-state">Nenhum material cancelado.</div>`;
 
       pendentes.forEach((m) => {
         const div = document.createElement("div");
@@ -1036,8 +1052,8 @@
 
         let actionArea = `
           <div class="item-actions">
-            <button class="small-btn btn-ok" onclick="abrirEntregaMaterial(${m.id})">Marcar como entregue</button>
-            <button class="small-btn btn-warn" onclick="abrirCancelamentoMaterial(${m.id})">Cancelar pedido</button>
+            <button class="small-btn" onclick="abrirEntregaMaterial(${m.id})">Marcar como entregue</button>
+            <button class="small-btn" onclick="abrirCancelamentoMaterial(${m.id})">Cancelar pedido</button>
           </div>
         `;
 
@@ -1046,7 +1062,7 @@
             <div class="inline-form">
               <label>Data de entrega</label>
               <input id="entrega_${m.id}" type="date">
-              <button class="small-btn btn-ok" onclick="confirmarEntregaMaterial(${m.id})">Salvar entrega</button>
+              <button class="small-btn" onclick="confirmarEntregaMaterial(${m.id})">Salvar entrega</button>
             </div>
           `;
         }
@@ -1056,7 +1072,7 @@
             <div class="inline-form">
               <label>Motivo do cancelamento</label>
               <textarea id="cancelamento_${m.id}" placeholder="Explique o motivo do cancelamento"></textarea>
-              <button class="small-btn btn-warn" onclick="confirmarCancelamentoMaterial(${m.id})">Salvar cancelamento</button>
+              <button class="small-btn" onclick="confirmarCancelamentoMaterial(${m.id})">Salvar cancelamento</button>
             </div>
           `;
         }
@@ -1279,7 +1295,7 @@
           </div>
 
           <div class="item-actions">
-            <button class="small-btn btn-gray" onclick="removerEquipe(${e.id})">Excluir frente</button>
+            <button class="small-btn" onclick="removerEquipe(${e.id})">Excluir frente</button>
           </div>
         `;
         container.appendChild(div);
@@ -1385,7 +1401,7 @@
             <strong>${mesesNomes[mes]} / ${ano}</strong>
             <p class="item-title">${existente.realizadoMes}% realizado no mês</p>
             <div class="status-inline-actions">
-              <button class="btn-danger small-btn" onclick="excluirStatus(${existente.id})">Excluir lançamento</button>
+              <button class="small-btn" onclick="excluirStatus(${existente.id})">Excluir lançamento</button>
             </div>
           </div>
         `;
@@ -1396,7 +1412,7 @@
             <p class="item-sub">Nenhum lançamento encontrado para este mês. Informe o percentual realizado.</p>
             <input id="novoRealizadoMes" class="status-value-input" type="number" min="0" max="100" step="0.01" placeholder="% realizada no mês">
             <div class="status-inline-actions">
-              <button class="small-btn btn-red" onclick="adicionarStatusSelecionado()">Salvar lançamento</button>
+              <button class="small-btn" onclick="adicionarStatusSelecionado()">Salvar lançamento</button>
             </div>
           </div>
         `;
