@@ -1124,25 +1124,31 @@
           </div>
         `;
 
-        if (m.mostrandoAcao === "entrega") {
-          actionArea += `
-            <div class="inline-form">
-              <label>Data de entrega</label>
-              <input id="entrega_${m.id}" type="date">
-              <button class="btn-success small-btn" onclick="confirmarEntregaMaterial(${m.id})">Salvar entrega</button>
-            </div>
-          `;
-        }
+      if (m.mostrandoAcao === "entrega") {
+  actionArea += `
+    <div class="inline-form">
+      <label>Data de entrega</label>
+      <input id="entrega_${m.id}" type="date">
+      <div class="item-actions">
+        <button class="btn-success small-btn" onclick="confirmarEntregaMaterial(${m.id})">Salvar entrega</button>
+        <button class="btn-black small-btn" onclick="fecharAcaoMaterial(${m.id})">Fechar</button>
+      </div>
+    </div>
+  `;
+}
 
-        if (m.mostrandoAcao === "cancelamento") {
-          actionArea += `
-            <div class="inline-form">
-              <label>Motivo do cancelamento</label>
-              <textarea id="cancelamento_${m.id}" placeholder="Explique o motivo do cancelamento"></textarea>
-              <button class="btn-danger small-btn" onclick="confirmarCancelamentoMaterial(${m.id})">Salvar cancelamento</button>
-            </div>
-          `;
-        }
+if (m.mostrandoAcao === "cancelamento") {
+  actionArea += `
+    <div class="inline-form">
+      <label>Motivo do cancelamento</label>
+      <textarea id="cancelamento_${m.id}" placeholder="Explique o motivo do cancelamento"></textarea>
+      <div class="item-actions">
+        <button class="btn-danger small-btn" onclick="confirmarCancelamentoMaterial(${m.id})">Salvar cancelamento</button>
+        <button class="btn-black small-btn" onclick="fecharAcaoMaterial(${m.id})">Fechar</button>
+      </div>
+    </div>
+  `;
+}
 
         div.innerHTML = `
           <div class="item-top">
