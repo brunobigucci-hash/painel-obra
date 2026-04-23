@@ -1766,14 +1766,20 @@ function fecharCancelamentoProgramacao(id) {
       updateSummary();
     }
 
-    function renderDashboard() {
-      const acumulado = state.statusObra.reduce((acc, item) => acc + Number(item.realizadoMes || 0), 0);
+  function renderDashboard() {
+  const itensOrdenados = [...state.statusObra].sort((a, b) => {
+    if (a.ano !== b.ano) return a.ano - b.ano;
+    return a.mes - b.mes;
+  });
 
-      document.getElementById("realizadoAcumuladoDashboard").textContent = `${acumulado}%`;
-      document.getElementById("donutValor").textContent = `${acumulado}%`;
+  const acumulado = itensOrdenados.reduce((acc, item) => acc + Number(item.realizadoMes || 0), 0);
 
-      desenharGraficoRosca(acumulado);
-    }
+  document.getElementById("realizadoAcumuladoDashboard").textContent = `${acumulado.toFixed(2)}%`;
+  document.getElementById("donutValor").textContent = `${acumulado.toFixed(2)}%`;
+
+  desenharGraficoRoscaSegmentada(itensOrdenados, acumulado);
+  renderLegendaGraficoStatus(itensOrdenados);
+}
 
     function desenharGraficoRosca(percentual) {
       const canvas = document.getElementById("graficoRosca");
