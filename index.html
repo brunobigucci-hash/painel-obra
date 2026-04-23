@@ -1780,6 +1780,39 @@ function fecharCancelamentoProgramacao(id) {
   desenharGraficoRoscaSegmentada(itensOrdenados, acumulado);
   renderLegendaGraficoStatus(itensOrdenados);
 }
+    function renderDashboard() {
+  ...
+}
+
+/* 👇 COLE AQUI 👇 */
+function renderLegendaGraficoStatus(itens) {
+  const container = document.getElementById("legendaGraficoStatus");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (!itens.length) {
+    container.innerHTML = `<div class="empty-state">Nenhum mês lançado ainda.</div>`;
+    return;
+  }
+
+  itens.forEach((item, index) => {
+    const cor = coresSegmentos[index % coresSegmentos.length];
+    const nomeMesAno = `${mesesNomes[item.mes]} / ${item.ano}`;
+
+    const div = document.createElement("div");
+    div.className = "legenda-item";
+    div.innerHTML = `
+      <div class="legenda-left">
+        <span class="legenda-cor" style="background:${cor}"></span>
+        <span class="legenda-texto">${nomeMesAno}</span>
+      </div>
+      <span class="legenda-valor">${Number(item.realizadoMes).toFixed(2)}%</span>
+    `;
+
+    container.appendChild(div);
+  });
+}
 
     function desenharGraficoRosca(percentual) {
       const canvas = document.getElementById("graficoRosca");
