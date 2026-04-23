@@ -1814,41 +1814,56 @@ function renderLegendaGraficoStatus(itens) {
   });
 }
 
-    function desenharGraficoRosca(percentual) {
-      const canvas = document.getElementById("graficoRosca");
-      const ctx = canvas.getContext("2d");
+ function desenharGraficoRoscaSegmentada(itens, percentualTotal) {
+  const canvas = document.getElementById("graficoRosca");
+  const ctx = canvas.getContext("2d");
 
-      const size = 320;
-      canvas.width = size * 2;
-      canvas.height = size * 2;
+  const size = 320;
+  canvas.width = size * 2;
+  canvas.height = size * 2;
 
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(2, 2);
-      ctx.clearRect(0, 0, size, size);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(2, 2);
+  ctx.clearRect(0, 0, size, size);
 
-      const centerX = size / 2;
-      const centerY = size / 2;
-      const radius = 120;
-      const lineWidth = 28;
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const radius = 120;
+  const lineWidth = 28;
 
-      const valor = Math.max(0, Math.min(percentual, 100));
-      const startAngle = -Math.PI / 2;
-      const endAngle = startAngle + (Math.PI * 2 * valor) / 100;
+  // Fundo cinza da rosca inteira
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  ctx.strokeStyle = "#e5e7eb";
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = "round";
+  ctx.stroke();
 
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-      ctx.strokeStyle = "#e5e7eb";
-      ctx.lineWidth = lineWidth;
-      ctx.lineCap = "round";
-      ctx.stroke();
+  if (!itens.length || percentualTotal <= 0) return;
 
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-      ctx.strokeStyle = "#2563eb";
-      ctx.lineWidth = lineWidth;
-      ctx.lineCap = "round";
-      ctx.stroke();
-    }
+  let anguloAtual = -Math.PI / 2;
+  const totalConsiderado = Math.max(0, Math.min(percentualTotal, 100));
+
+  itens.forEach((item, index) => {
+    const valor = Number(item.realizadoMes || 0);
+    if (valor <= 0) return;
+
+    const proporcao = valor / 100;
+    const anguloSegmento = proporcao * Math.PI * 2;
+
+    const inicio = anguloAtual;
+    const fim = anguloAtual + anguloSegmento;
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, inicio, fim);
+    ctx.strokeStyle = coresSegmentos[index % coresSegmentos.length];
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = "round";
+    ctx.stroke();
+
+    anguloAtual = fim;
+  });
+}
 
     function updateSummary() {
       const checklistDone = state.checklist.filter(i => i.done).length;
