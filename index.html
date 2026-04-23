@@ -5,6 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel de Obra</title>
   <style>
+    .legenda-grafico-status {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.legenda-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--mb-border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.legenda-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.legenda-cor {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.legenda-texto {
+  font-size: 14px;
+  color: var(--mb-text);
+  font-weight: 600;
+}
+
+.legenda-valor {
+  font-size: 14px;
+  color: var(--mb-muted);
+  font-weight: 700;
+}
     :root {
       --mb-red: #b31217;
       --mb-black: #111111;
