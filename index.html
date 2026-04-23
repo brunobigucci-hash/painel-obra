@@ -5,48 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel de Obra</title>
   <style>
-    .legenda-grafico-status {
-  display: grid;
-  gap: 8px;
-  margin-top: 18px;
-}
-
-.legenda-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 12px;
-  border: 1px solid var(--mb-border);
-  border-radius: 12px;
-  background: #fff;
-}
-
-.legenda-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.legenda-cor {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  flex-shrink: 0;
-}
-
-.legenda-texto {
-  font-size: 14px;
-  color: var(--mb-text);
-  font-weight: 600;
-}
-
-.legenda-valor {
-  font-size: 14px;
-  color: var(--mb-muted);
-  font-weight: 700;
-}
     :root {
       --mb-red: #b31217;
       --mb-black: #111111;
@@ -56,13 +14,13 @@
       --mb-text: #1f2937;
       --mb-muted: #6b7280;
       --soft-red: #fff1f2;
+
       --green-bg: #d1fae5;
       --green-text: #065f46;
       --yellow-bg: #fef3c7;
       --yellow-text: #92400e;
       --red-bg: #fee2e2;
       --red-text: #991b1b;
-      --blue-ring: #2563eb;
     }
 
     * { box-sizing: border-box; }
@@ -298,7 +256,7 @@
       color: white !important;
     }
 
-    /* Positivos verdes */
+    /* Positivos */
     .btn-ok,
     .btn-success,
     .btn-positive {
@@ -306,7 +264,7 @@
       color: white !important;
     }
 
-    /* Cancelamento / excluir vermelhos */
+    /* Cancelamento / excluir */
     .btn-danger,
     .btn-warn,
     .icon-btn,
@@ -494,12 +452,56 @@
       font-weight: 700;
       color: var(--mb-black);
       line-height: 1;
+      text-align: center;
     }
 
     .donut-label {
       margin-top: 10px;
       font-size: 16px;
       color: var(--mb-muted);
+    }
+
+    .legenda-grafico-status {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .legenda-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--mb-border);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .legenda-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .legenda-cor {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .legenda-texto {
+      font-size: 14px;
+      color: var(--mb-text);
+      font-weight: 600;
+    }
+
+    .legenda-valor {
+      font-size: 14px;
+      color: var(--mb-muted);
+      font-weight: 700;
     }
 
     .fixed-scroll {
@@ -851,23 +853,23 @@
           <strong id="realizadoAcumuladoDashboard">0%</strong>
         </div>
 
-       <div class="donut-dashboard">
-  <div class="donut-wrapper">
-    <canvas id="graficoRosca" width="320" height="320"></canvas>
-    <div class="donut-center">
-      <div class="donut-value" id="donutValor">0%</div>
-      <div class="donut-label">Total da obra</div>
-    </div>
-  </div>
-</div>
+        <div class="donut-dashboard">
+          <div class="donut-wrapper">
+            <canvas id="graficoRosca" width="320" height="320"></canvas>
+            <div class="donut-center">
+              <div class="donut-value" id="donutValor">0%</div>
+              <div class="donut-label">Total da obra</div>
+            </div>
+          </div>
+        </div>
 
-<div id="legendaGraficoStatus" class="legenda-grafico-status"></div>
+        <div id="legendaGraficoStatus" class="legenda-grafico-status"></div>
       </div>
     </section>
   </div>
 
   <script>
-  const STORAGE_KEY = "painel_obra_mbigucci_v5";
+    const STORAGE_KEY = "painel_obra_mbigucci_v5";
 
     const defaultState = {
       obraNome: "Obra MBigucci",
@@ -928,6 +930,15 @@
       "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
 
+    const coresSegmentos = [
+      "#b31217", "#2563eb", "#15803d", "#f59e0b",
+      "#7c3aed", "#0f766e", "#dc2626", "#0891b2",
+      "#ca8a04", "#374151", "#9333ea", "#166534",
+      "#be123c", "#1d4ed8", "#047857", "#d97706",
+      "#6d28d9", "#0f766e", "#991b1b", "#0369a1",
+      "#a16207", "#4b5563", "#7e22ce", "#14532d"
+    ];
+
     let state = loadState();
 
     function loadState() {
@@ -981,6 +992,7 @@
 
     function preencherMeses() {
       const select = document.getElementById("statusMes");
+      if (!select) return;
       select.innerHTML = "";
       mesesNomes.forEach((mes, index) => {
         const option = document.createElement("option");
@@ -996,9 +1008,13 @@
     }
 
     function renderHeader() {
-      document.getElementById("obraNomeInput").value = state.obraNome;
-      document.getElementById("dataHoje").textContent = new Date().toLocaleDateString("pt-BR");
-      document.getElementById("notaDataInfo").textContent = `Data do registro: ${new Date().toLocaleDateString("pt-BR")}`;
+      const obraInput = document.getElementById("obraNomeInput");
+      const dataHoje = document.getElementById("dataHoje");
+      const notaDataInfo = document.getElementById("notaDataInfo");
+
+      if (obraInput) obraInput.value = state.obraNome;
+      if (dataHoje) dataHoje.textContent = new Date().toLocaleDateString("pt-BR");
+      if (notaDataInfo) notaDataInfo.textContent = `Data do registro: ${new Date().toLocaleDateString("pt-BR")}`;
     }
 
     function getBadgeByStatus(status) {
@@ -1009,6 +1025,7 @@
 
     function renderChecklist() {
       const container = document.getElementById("checklistContainer");
+      if (!container) return;
       container.innerHTML = "";
 
       state.checklist.forEach((item) => {
@@ -1061,6 +1078,8 @@
       const abertasEl = document.getElementById("listaPendenciasAbertas");
       const concluidasEl = document.getElementById("listaPendenciasConcluidas");
 
+      if (!abertasEl || !concluidasEl) return;
+
       abertasEl.innerHTML = "";
       concluidasEl.innerHTML = "";
 
@@ -1102,8 +1121,8 @@
         concluidasEl.appendChild(div);
       });
 
-      document.getElementById("painelPendenciasConcluidas").style.display =
-        state.ui.pendenciasConcluidasOpen ? "block" : "none";
+      const painel = document.getElementById("painelPendenciasConcluidas");
+      if (painel) painel.style.display = state.ui.pendenciasConcluidasOpen ? "block" : "none";
     }
 
     function toggleConcluidasPendencias() {
@@ -1113,9 +1132,9 @@
     }
 
     function addPendencia() {
-      const item = document.getElementById("pendenciaItem").value.trim();
-      const responsavel = document.getElementById("pendenciaResponsavel").value.trim();
-      const prazo = document.getElementById("pendenciaPrazo").value;
+      const item = document.getElementById("pendenciaItem")?.value.trim();
+      const responsavel = document.getElementById("pendenciaResponsavel")?.value.trim();
+      const prazo = document.getElementById("pendenciaPrazo")?.value;
 
       if (!item || !responsavel || !prazo) return;
 
@@ -1151,6 +1170,8 @@
       const pendentesEl = document.getElementById("listaMateriaisPendentes");
       const canceladosEl = document.getElementById("listaMateriaisCancelados");
 
+      if (!pendentesEl || !canceladosEl) return;
+
       pendentesEl.innerHTML = "";
       canceladosEl.innerHTML = "";
 
@@ -1168,31 +1189,31 @@
           </div>
         `;
 
-      if (m.mostrandoAcao === "entrega") {
-  actionArea += `
-    <div class="inline-form">
-      <label>Data de entrega</label>
-      <input id="entrega_${m.id}" type="date">
-      <div class="item-actions">
-        <button class="btn-success small-btn" onclick="confirmarEntregaMaterial(${m.id})">Salvar entrega</button>
-        <button class="btn-black small-btn" onclick="fecharAcaoMaterial(${m.id})">Fechar</button>
-      </div>
-    </div>
-  `;
-}
+        if (m.mostrandoAcao === "entrega") {
+          actionArea += `
+            <div class="inline-form">
+              <label>Data de entrega</label>
+              <input id="entrega_${m.id}" type="date">
+              <div class="item-actions">
+                <button class="btn-success small-btn" onclick="confirmarEntregaMaterial(${m.id})">Salvar entrega</button>
+                <button class="btn-black small-btn" onclick="fecharAcaoMaterial(${m.id})">Fechar</button>
+              </div>
+            </div>
+          `;
+        }
 
-if (m.mostrandoAcao === "cancelamento") {
-  actionArea += `
-    <div class="inline-form">
-      <label>Motivo do cancelamento</label>
-      <textarea id="cancelamento_${m.id}" placeholder="Explique o motivo do cancelamento"></textarea>
-      <div class="item-actions">
-        <button class="btn-danger small-btn" onclick="confirmarCancelamentoMaterial(${m.id})">Salvar cancelamento</button>
-        <button class="btn-black small-btn" onclick="fecharAcaoMaterial(${m.id})">Fechar</button>
-      </div>
-    </div>
-  `;
-}
+        if (m.mostrandoAcao === "cancelamento") {
+          actionArea += `
+            <div class="inline-form">
+              <label>Motivo do cancelamento</label>
+              <textarea id="cancelamento_${m.id}" placeholder="Explique o motivo do cancelamento"></textarea>
+              <div class="item-actions">
+                <button class="btn-danger small-btn" onclick="confirmarCancelamentoMaterial(${m.id})">Salvar cancelamento</button>
+                <button class="btn-black small-btn" onclick="fecharAcaoMaterial(${m.id})">Fechar</button>
+              </div>
+            </div>
+          `;
+        }
 
         div.innerHTML = `
           <div class="item-top">
@@ -1227,10 +1248,11 @@ if (m.mostrandoAcao === "cancelamento") {
         canceladosEl.appendChild(div);
       });
 
-      document.getElementById("painelMateriaisCancelados").style.display =
-        state.ui.materiaisCanceladosOpen ? "block" : "none";
-      document.getElementById("painelMateriaisEntregues").style.display =
-        state.ui.materiaisEntreguesOpen ? "block" : "none";
+      const painelCancelados = document.getElementById("painelMateriaisCancelados");
+      const painelEntregues = document.getElementById("painelMateriaisEntregues");
+
+      if (painelCancelados) painelCancelados.style.display = state.ui.materiaisCanceladosOpen ? "block" : "none";
+      if (painelEntregues) painelEntregues.style.display = state.ui.materiaisEntreguesOpen ? "block" : "none";
 
       if (state.ui.materiaisEntreguesOpen) {
         renderMateriaisEntreguesFiltrados();
@@ -1250,10 +1272,10 @@ if (m.mostrandoAcao === "cancelamento") {
     }
 
     function addMaterial() {
-      const pedido = document.getElementById("materialPedido").value.trim();
-      const material = document.getElementById("materialNome").value.trim();
-      const fornecedor = document.getElementById("materialFornecedor").value.trim();
-      const previsto = document.getElementById("materialPrevisto").value;
+      const pedido = document.getElementById("materialPedido")?.value.trim();
+      const material = document.getElementById("materialNome")?.value.trim();
+      const fornecedor = document.getElementById("materialFornecedor")?.value.trim();
+      const previsto = document.getElementById("materialPrevisto")?.value;
 
       if (!pedido || !material || !fornecedor || !previsto) return;
 
@@ -1292,22 +1314,13 @@ if (m.mostrandoAcao === "cancelamento") {
     }
 
     function fecharAcaoMaterial(id) {
-  const material = state.materiais.find(m => m.id === id);
-  if (!material) return;
+      const material = state.materiais.find(m => m.id === id);
+      if (!material) return;
 
-  material.mostrandoAcao = "";
-  saveState();
-  renderMateriais();
-}
-
-function fecharCancelamentoProgramacao(id) {
-  const item = state.programacoes.find(p => p.id === id);
-  if (!item) return;
-
-  item.mostrandoCancelamento = false;
-  saveState();
-  renderProgramacoes();
-}
+      material.mostrandoAcao = "";
+      saveState();
+      renderMateriais();
+    }
 
     function confirmarEntregaMaterial(id) {
       const input = document.getElementById(`entrega_${id}`);
@@ -1338,13 +1351,14 @@ function fecharCancelamentoProgramacao(id) {
     }
 
     function renderMateriaisEntreguesFiltrados() {
-      const dataInicio = document.getElementById("filtroDataInicio").value;
-      const dataFim = document.getElementById("filtroDataFim").value;
-      const produto = document.getElementById("filtroProduto").value.trim().toLowerCase();
-      const fornecedor = document.getElementById("filtroFornecedor").value.trim().toLowerCase();
-      const pedido = document.getElementById("filtroPedido").value.trim().toLowerCase();
+      const dataInicio = document.getElementById("filtroDataInicio")?.value || "";
+      const dataFim = document.getElementById("filtroDataFim")?.value || "";
+      const produto = document.getElementById("filtroProduto")?.value.trim().toLowerCase() || "";
+      const fornecedor = document.getElementById("filtroFornecedor")?.value.trim().toLowerCase() || "";
+      const pedido = document.getElementById("filtroPedido")?.value.trim().toLowerCase() || "";
 
       const entreguesEl = document.getElementById("listaMateriaisEntregues");
+      if (!entreguesEl) return;
       entreguesEl.innerHTML = "";
 
       let itens = state.materiais.filter(m => m.status === "Entregue");
@@ -1383,11 +1397,11 @@ function fecharCancelamentoProgramacao(id) {
     }
 
     function limparFiltrosEntregues() {
-      document.getElementById("filtroDataInicio").value = "";
-      document.getElementById("filtroDataFim").value = "";
-      document.getElementById("filtroProduto").value = "";
-      document.getElementById("filtroFornecedor").value = "";
-      document.getElementById("filtroPedido").value = "";
+      const ids = ["filtroDataInicio","filtroDataFim","filtroProduto","filtroFornecedor","filtroPedido"];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
       renderMateriaisEntreguesFiltrados();
     }
 
@@ -1403,6 +1417,7 @@ function fecharCancelamentoProgramacao(id) {
         .sort((a, b) => a.data.localeCompare(b.data));
 
       const ativasEl = document.getElementById("listaProgramacoesAtivas");
+      if (!ativasEl) return;
       ativasEl.innerHTML = "";
 
       if (!ativas.length) {
@@ -1431,24 +1446,25 @@ function fecharCancelamentoProgramacao(id) {
             <button class="btn-danger small-btn" onclick="abrirCancelamentoProgramacao(${p.id})">Cancelar</button>
           </div>
 
-       ${p.mostrandoCancelamento ? `
-  <div class="inline-form">
-    <label>Motivo do cancelamento</label>
-    <textarea id="motivo_cancelamento_prog_${p.id}" placeholder="Explique o motivo do cancelamento"></textarea>
-    <div class="item-actions">
-      <button class="btn-danger small-btn" onclick="confirmarCancelamentoProgramacao(${p.id})">Salvar cancelamento</button>
-      <button class="btn-black small-btn" onclick="fecharCancelamentoProgramacao(${p.id})">Fechar</button>
-    </div>
-  </div>
-` : ""}
+          ${p.mostrandoCancelamento ? `
+            <div class="inline-form">
+              <label>Motivo do cancelamento</label>
+              <textarea id="motivo_cancelamento_prog_${p.id}" placeholder="Explique o motivo do cancelamento"></textarea>
+              <div class="item-actions">
+                <button class="btn-danger small-btn" onclick="confirmarCancelamentoProgramacao(${p.id})">Salvar cancelamento</button>
+                <button class="btn-black small-btn" onclick="fecharCancelamentoProgramacao(${p.id})">Fechar</button>
+              </div>
+            </div>
+          ` : ""}
         `;
         ativasEl.appendChild(div);
       });
 
-      document.getElementById("painelProgramacoesConcluidas").style.display =
-        state.ui.programacoesConcluidasOpen ? "block" : "none";
-      document.getElementById("painelProgramacoesCanceladas").style.display =
-        state.ui.programacoesCanceladasOpen ? "block" : "none";
+      const painelConcluidas = document.getElementById("painelProgramacoesConcluidas");
+      const painelCanceladas = document.getElementById("painelProgramacoesCanceladas");
+
+      if (painelConcluidas) painelConcluidas.style.display = state.ui.programacoesConcluidasOpen ? "block" : "none";
+      if (painelCanceladas) painelCanceladas.style.display = state.ui.programacoesCanceladasOpen ? "block" : "none";
 
       if (state.ui.programacoesConcluidasOpen) {
         renderProgramacoesConcluidasFiltradas();
@@ -1459,11 +1475,11 @@ function fecharCancelamentoProgramacao(id) {
     }
 
     function addProgramacao() {
-      const data = document.getElementById("programacaoData").value;
-      const frente = document.getElementById("programacaoFrente").value.trim();
-      const area = document.getElementById("programacaoArea").value.trim();
-      const responsavel = document.getElementById("programacaoResponsavel").value.trim();
-      const observacao = document.getElementById("programacaoObservacao").value.trim();
+      const data = document.getElementById("programacaoData")?.value;
+      const frente = document.getElementById("programacaoFrente")?.value.trim();
+      const area = document.getElementById("programacaoArea")?.value.trim();
+      const responsavel = document.getElementById("programacaoResponsavel")?.value.trim();
+      const observacao = document.getElementById("programacaoObservacao")?.value.trim();
 
       if (!data || !frente || !area || !responsavel) return;
 
@@ -1505,6 +1521,15 @@ function fecharCancelamentoProgramacao(id) {
       renderProgramacoes();
     }
 
+    function fecharCancelamentoProgramacao(id) {
+      const item = state.programacoes.find(p => p.id === id);
+      if (!item) return;
+
+      item.mostrandoCancelamento = false;
+      saveState();
+      renderProgramacoes();
+    }
+
     function confirmarCancelamentoProgramacao(id) {
       const input = document.getElementById(`motivo_cancelamento_prog_${id}`);
       if (!input || !input.value.trim()) return;
@@ -1533,13 +1558,14 @@ function fecharCancelamentoProgramacao(id) {
     }
 
     function renderProgramacoesConcluidasFiltradas() {
-      const dataInicio = document.getElementById("filtroProgConclDataInicio").value;
-      const dataFim = document.getElementById("filtroProgConclDataFim").value;
-      const frente = document.getElementById("filtroProgConclFrente").value.trim().toLowerCase();
-      const area = document.getElementById("filtroProgConclArea").value.trim().toLowerCase();
-      const responsavel = document.getElementById("filtroProgConclResponsavel").value.trim().toLowerCase();
+      const dataInicio = document.getElementById("filtroProgConclDataInicio")?.value || "";
+      const dataFim = document.getElementById("filtroProgConclDataFim")?.value || "";
+      const frente = document.getElementById("filtroProgConclFrente")?.value.trim().toLowerCase() || "";
+      const area = document.getElementById("filtroProgConclArea")?.value.trim().toLowerCase() || "";
+      const responsavel = document.getElementById("filtroProgConclResponsavel")?.value.trim().toLowerCase() || "";
 
       const container = document.getElementById("listaProgramacoesConcluidas");
+      if (!container) return;
       container.innerHTML = "";
 
       let itens = state.programacoes
@@ -1583,13 +1609,14 @@ function fecharCancelamentoProgramacao(id) {
     }
 
     function renderProgramacoesCanceladasFiltradas() {
-      const dataInicio = document.getElementById("filtroProgCancDataInicio").value;
-      const dataFim = document.getElementById("filtroProgCancDataFim").value;
-      const frente = document.getElementById("filtroProgCancFrente").value.trim().toLowerCase();
-      const area = document.getElementById("filtroProgCancArea").value.trim().toLowerCase();
-      const responsavel = document.getElementById("filtroProgCancResponsavel").value.trim().toLowerCase();
+      const dataInicio = document.getElementById("filtroProgCancDataInicio")?.value || "";
+      const dataFim = document.getElementById("filtroProgCancDataFim")?.value || "";
+      const frente = document.getElementById("filtroProgCancFrente")?.value.trim().toLowerCase() || "";
+      const area = document.getElementById("filtroProgCancArea")?.value.trim().toLowerCase() || "";
+      const responsavel = document.getElementById("filtroProgCancResponsavel")?.value.trim().toLowerCase() || "";
 
       const container = document.getElementById("listaProgramacoesCanceladas");
+      if (!container) return;
       container.innerHTML = "";
 
       let itens = state.programacoes
@@ -1634,20 +1661,32 @@ function fecharCancelamentoProgramacao(id) {
     }
 
     function limparFiltrosProgramacoesConcluidas() {
-      document.getElementById("filtroProgConclDataInicio").value = "";
-      document.getElementById("filtroProgConclDataFim").value = "";
-      document.getElementById("filtroProgConclFrente").value = "";
-      document.getElementById("filtroProgConclArea").value = "";
-      document.getElementById("filtroProgConclResponsavel").value = "";
+      const ids = [
+        "filtroProgConclDataInicio",
+        "filtroProgConclDataFim",
+        "filtroProgConclFrente",
+        "filtroProgConclArea",
+        "filtroProgConclResponsavel"
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
       renderProgramacoesConcluidasFiltradas();
     }
 
     function limparFiltrosProgramacoesCanceladas() {
-      document.getElementById("filtroProgCancDataInicio").value = "";
-      document.getElementById("filtroProgCancDataFim").value = "";
-      document.getElementById("filtroProgCancFrente").value = "";
-      document.getElementById("filtroProgCancArea").value = "";
-      document.getElementById("filtroProgCancResponsavel").value = "";
+      const ids = [
+        "filtroProgCancDataInicio",
+        "filtroProgCancDataFim",
+        "filtroProgCancFrente",
+        "filtroProgCancArea",
+        "filtroProgCancResponsavel"
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
       renderProgramacoesCanceladasFiltradas();
     }
 
@@ -1659,6 +1698,7 @@ function fecharCancelamentoProgramacao(id) {
 
     function renderNotas() {
       const container = document.getElementById("listaNotas");
+      if (!container) return;
       container.innerHTML = "";
 
       if (!state.notas.length) {
@@ -1678,7 +1718,7 @@ function fecharCancelamentoProgramacao(id) {
     }
 
     function addNota() {
-      const texto = document.getElementById("notaTexto").value.trim();
+      const texto = document.getElementById("notaTexto")?.value.trim();
       if (!texto) return;
 
       state.notas.unshift({
@@ -1694,12 +1734,14 @@ function fecharCancelamentoProgramacao(id) {
     }
 
     function verificarStatusSelecionado() {
-      const mes = Number(document.getElementById("statusMes").value);
-      const ano = Number(document.getElementById("statusAno").value);
+      const mes = Number(document.getElementById("statusMes")?.value);
+      const ano = Number(document.getElementById("statusAno")?.value);
 
       if (!ano) return;
 
       const painel = document.getElementById("painelLancamentoSelecionado");
+      if (!painel) return;
+
       const existente = state.statusObra.find(item => item.mes === mes && item.ano === ano);
 
       painel.style.display = "block";
@@ -1708,7 +1750,7 @@ function fecharCancelamentoProgramacao(id) {
         painel.innerHTML = `
           <div class="status-check-row">
             <strong>${mesesNomes[mes]} / ${ano}</strong>
-            <p class="item-title">${existente.realizadoMes}% realizado no mês</p>
+            <p class="item-title">${Number(existente.realizadoMes).toFixed(2)}% realizado no mês</p>
             <div class="status-inline-actions">
               <button class="btn-danger small-btn" onclick="excluirStatus(${existente.id})">Excluir lançamento</button>
             </div>
@@ -1729,8 +1771,8 @@ function fecharCancelamentoProgramacao(id) {
     }
 
     function adicionarStatusSelecionado() {
-      const mes = Number(document.getElementById("statusMes").value);
-      const ano = Number(document.getElementById("statusAno").value);
+      const mes = Number(document.getElementById("statusMes")?.value);
+      const ano = Number(document.getElementById("statusAno")?.value);
       const input = document.getElementById("novoRealizadoMes");
 
       if (!input) return;
@@ -1759,111 +1801,108 @@ function fecharCancelamentoProgramacao(id) {
       saveState();
 
       const painel = document.getElementById("painelLancamentoSelecionado");
-      painel.style.display = "none";
-      painel.innerHTML = "";
+      if (painel) {
+        painel.style.display = "none";
+        painel.innerHTML = "";
+      }
 
       renderDashboard();
       updateSummary();
     }
 
-  function renderDashboard() {
-  const itensOrdenados = [...state.statusObra].sort((a, b) => {
-    if (a.ano !== b.ano) return a.ano - b.ano;
-    return a.mes - b.mes;
-  });
-
-  const acumulado = itensOrdenados.reduce((acc, item) => acc + Number(item.realizadoMes || 0), 0);
-
-  document.getElementById("realizadoAcumuladoDashboard").textContent = `${acumulado.toFixed(2)}%`;
-  document.getElementById("donutValor").textContent = `${acumulado.toFixed(2)}%`;
-
-  desenharGraficoRoscaSegmentada(itensOrdenados, acumulado);
-  renderLegendaGraficoStatus(itensOrdenados);
-}
     function renderDashboard() {
-  ...
-}
+      const itensOrdenados = [...state.statusObra].sort((a, b) => {
+        if (a.ano !== b.ano) return a.ano - b.ano;
+        return a.mes - b.mes;
+      });
 
-/* 👇 COLE AQUI 👇 */
-function renderLegendaGraficoStatus(itens) {
-  const container = document.getElementById("legendaGraficoStatus");
-  if (!container) return;
+      const acumulado = itensOrdenados.reduce((acc, item) => acc + Number(item.realizadoMes || 0), 0);
 
-  container.innerHTML = "";
+      const totalEl = document.getElementById("realizadoAcumuladoDashboard");
+      const donutEl = document.getElementById("donutValor");
 
-  if (!itens.length) {
-    container.innerHTML = `<div class="empty-state">Nenhum mês lançado ainda.</div>`;
-    return;
-  }
+      if (totalEl) totalEl.textContent = `${acumulado.toFixed(2)}%`;
+      if (donutEl) donutEl.textContent = `${acumulado.toFixed(2)}%`;
 
-  itens.forEach((item, index) => {
-    const cor = coresSegmentos[index % coresSegmentos.length];
-    const nomeMesAno = `${mesesNomes[item.mes]} / ${item.ano}`;
+      desenharGraficoRoscaSegmentada(itensOrdenados);
+      renderLegendaGraficoStatus(itensOrdenados);
+    }
 
-    const div = document.createElement("div");
-    div.className = "legenda-item";
-    div.innerHTML = `
-      <div class="legenda-left">
-        <span class="legenda-cor" style="background:${cor}"></span>
-        <span class="legenda-texto">${nomeMesAno}</span>
-      </div>
-      <span class="legenda-valor">${Number(item.realizadoMes).toFixed(2)}%</span>
-    `;
+    function desenharGraficoRoscaSegmentada(itens) {
+      const canvas = document.getElementById("graficoRosca");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
 
-    container.appendChild(div);
-  });
-}
+      const size = 320;
+      canvas.width = size * 2;
+      canvas.height = size * 2;
 
- function desenharGraficoRoscaSegmentada(itens, percentualTotal) {
-  const canvas = document.getElementById("graficoRosca");
-  const ctx = canvas.getContext("2d");
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(2, 2);
+      ctx.clearRect(0, 0, size, size);
 
-  const size = 320;
-  canvas.width = size * 2;
-  canvas.height = size * 2;
+      const centerX = size / 2;
+      const centerY = size / 2;
+      const radius = 120;
+      const lineWidth = 28;
 
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.scale(2, 2);
-  ctx.clearRect(0, 0, size, size);
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = "#e5e7eb";
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = "butt";
+      ctx.stroke();
 
-  const centerX = size / 2;
-  const centerY = size / 2;
-  const radius = 120;
-  const lineWidth = 28;
+      if (!itens.length) return;
 
-  // Fundo cinza da rosca inteira
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-  ctx.strokeStyle = "#e5e7eb";
-  ctx.lineWidth = lineWidth;
-  ctx.lineCap = "round";
-  ctx.stroke();
+      let anguloAtual = -Math.PI / 2;
 
-  if (!itens.length || percentualTotal <= 0) return;
+      itens.forEach((item, index) => {
+        const valor = Number(item.realizadoMes || 0);
+        if (valor <= 0) return;
 
-  let anguloAtual = -Math.PI / 2;
-  const totalConsiderado = Math.max(0, Math.min(percentualTotal, 100));
+        const anguloSegmento = (valor / 100) * Math.PI * 2;
+        const inicio = anguloAtual;
+        const fim = anguloAtual + anguloSegmento;
 
-  itens.forEach((item, index) => {
-    const valor = Number(item.realizadoMes || 0);
-    if (valor <= 0) return;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, inicio, fim);
+        ctx.strokeStyle = coresSegmentos[index % coresSegmentos.length];
+        ctx.lineWidth = lineWidth;
+        ctx.lineCap = "butt";
+        ctx.stroke();
 
-    const proporcao = valor / 100;
-    const anguloSegmento = proporcao * Math.PI * 2;
+        anguloAtual = fim;
+      });
+    }
 
-    const inicio = anguloAtual;
-    const fim = anguloAtual + anguloSegmento;
+    function renderLegendaGraficoStatus(itens) {
+      const container = document.getElementById("legendaGraficoStatus");
+      if (!container) return;
 
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, inicio, fim);
-    ctx.strokeStyle = coresSegmentos[index % coresSegmentos.length];
-    ctx.lineWidth = lineWidth;
-    ctx.lineCap = "round";
-    ctx.stroke();
+      container.innerHTML = "";
 
-    anguloAtual = fim;
-  });
-}
+      if (!itens.length) {
+        container.innerHTML = `<div class="empty-state">Nenhum mês lançado ainda.</div>`;
+        return;
+      }
+
+      itens.forEach((item, index) => {
+        const cor = coresSegmentos[index % coresSegmentos.length];
+        const nomeMesAno = `${mesesNomes[item.mes]} / ${item.ano}`;
+
+        const div = document.createElement("div");
+        div.className = "legenda-item";
+        div.innerHTML = `
+          <div class="legenda-left">
+            <span class="legenda-cor" style="background:${cor}"></span>
+            <span class="legenda-texto">${nomeMesAno}</span>
+          </div>
+          <span class="legenda-valor">${Number(item.realizadoMes).toFixed(2)}%</span>
+        `;
+        container.appendChild(div);
+      });
+    }
 
     function updateSummary() {
       const checklistDone = state.checklist.filter(i => i.done).length;
@@ -1875,10 +1914,15 @@ function renderLegendaGraficoStatus(itens) {
       const materiaisPendentes = state.materiais.filter(m => m.status === "Pendente").length;
       const programacoesAtivas = state.programacoes.filter(p => p.status === "Programado").length;
 
-      document.getElementById("checklistResumo").textContent = `${checklistPercent}%`;
-      document.getElementById("pendenciasResumo").textContent = abertas;
-      document.getElementById("materiaisResumo").textContent = materiaisPendentes;
-      document.getElementById("programacoesResumo").textContent = programacoesAtivas;
+      const checklistEl = document.getElementById("checklistResumo");
+      const pendenciasEl = document.getElementById("pendenciasResumo");
+      const materiaisEl = document.getElementById("materiaisResumo");
+      const programacoesEl = document.getElementById("programacoesResumo");
+
+      if (checklistEl) checklistEl.textContent = `${checklistPercent}%`;
+      if (pendenciasEl) pendenciasEl.textContent = abertas;
+      if (materiaisEl) materiaisEl.textContent = materiaisPendentes;
+      if (programacoesEl) programacoesEl.textContent = programacoesAtivas;
     }
 
     function renderAll() {
@@ -1892,10 +1936,17 @@ function renderLegendaGraficoStatus(itens) {
       updateSummary();
     }
 
-    document.getElementById("statusAno").value = new Date().getFullYear();
+    function initializeApp() {
+      const statusAno = document.getElementById("statusAno");
+      if (statusAno && !statusAno.value) {
+        statusAno.value = new Date().getFullYear();
+      }
 
-    preencherMeses();
-    renderAll();
+      preencherMeses();
+      renderAll();
+    }
+
+    initializeApp();
   </script>
 </body>
 </html>
